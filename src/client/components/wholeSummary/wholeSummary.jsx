@@ -15,9 +15,18 @@ class WholeSummary extends React.Component {
     }
 
     componentDidMount(){
-        console.log('HELLO MOUNT WHOLE SUMMARY')
-        this.getAllItemsHandler();
-        this.getReceiptHandler();
+
+        console.log('HELLO MOUNT WHOLE SUMMARY',this.props);
+
+        this.setState({
+                receiptItems:this.props.receiptItems,
+                receipt:this.props.receipt,
+                        })
+
+        var items = this.props.receiptItems;
+
+        this.getAllItemsHandler(items);
+        // this.getReceiptHandler();
     }
 
     getReceiptHandler(){
@@ -29,20 +38,13 @@ class WholeSummary extends React.Component {
     }
 
 
-    getAllItemsHandler() {
+    getAllItemsHandler(receiptItems) {
 
-        var reactThis = this;
-        console.log("clicking");
-        var id = Cookies.get('receiptId');
-        fetch(`/summary/${id}`, {
 
-        }).then(res => {
-            return res.json()
-        }).then(json =>{
             // console.log('in the jsx summary', json);
-            let obj = json;
-            this.setState({receiptItems: obj});
-            this.setState({change: true});
+            let obj = receiptItems;
+            // this.setState({receiptItems: obj});
+            // this.setState({change: true});
 
             // Add the price of items together to get the total amount
             let getTotal = 0;
@@ -57,7 +59,6 @@ class WholeSummary extends React.Component {
 
             // console.log(this.state.receiptItems);
             // console.log(this.state.change);
-        })
     }
 
     render() {
@@ -98,15 +99,31 @@ class WholeSummary extends React.Component {
                           <br/>
                           <br/>
                           <tr>
+                              <td className={styles.intern}>Subotal $</td>
+                              <td></td>
+                              <td className={styles.intern}>{this.state.receipt.subtotal}</td>
+                          </tr>
+                          <tr>
+                              <td className={styles.intern}>Service Charge $</td>
+                              <td></td>
+                              <td className={styles.intern}>{this.state.receipt.serviceCharge}</td>
+                          </tr>
+                          <tr>
+                              <td className={styles.intern}>GST $</td>
+                              <td></td>
+                              <td className={styles.intern}>{this.state.receipt.gst}</td>
+                          </tr>
+                          <tr>
                               <td className={styles.intern}>Grand Total $</td>
                               <td></td>
-                              <td className={styles.intern}>{this.state.receipt[0].total}</td>
+                              <td className={styles.intern}>{this.state.receipt.total}</td>
                           </tr>
                       </tbody>
                     </table>
-                    <br />
-                    <a className={styles.cleaner} href="/summaryReceipt">Next Page (Individual)</a>
                </div>
+
+                    <button onClick={()=>{this.props.previousButton(this.state.receipt)}}>Back</button>
+                    <button onClick={()=>{this.props.nextButton(this.state.receipt)}}>Next</button>
             </div>
             )
         }
