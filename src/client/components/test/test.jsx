@@ -24,8 +24,8 @@ class Test extends React.Component {
 
     dataReqHandler = () => {
         console.log('Start the engine');
-        let receiptId = Cookies.get('receiptId');
-
+        let receiptId = 4;
+        // Cookies.get('receiptId')
         fetch(`/massiveLoad/${receiptId}`)
             .then((response) => response.json())
             .then((response) => {
@@ -65,22 +65,22 @@ class Test extends React.Component {
         document.getElementById('writeHere').value = pretty;
     }
 
-    updateReceiptRequest = () => {
-        console.log('send request to update receipt');
-        let receipt = this.state.receipt;
-        let input = { obj: receipt };
+    // updateReceiptRequest = () => {
+    //     console.log('send request to update receipt');
+    //     let receipt = this.state.receipt;
+    //     let input = { obj: receipt };
 
-        fetch(`/update/receipt`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify(input)
-        }).then((res) => console.log('updated receipts'));
-        // console.log(res.json())
-        window.location.href = `/`;
-    };
+    //     fetch(`/update/receipt`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             Accept: 'application/json'
+    //         },
+    //         body: JSON.stringify(input)
+    //     }).then((res) => console.log('updated receipts'));
+    //     // console.log(res.json())
+
+    // };
 
     changePageForward = (state, pageName = null) => {
         var number = this.state.pageNum;
@@ -169,6 +169,8 @@ class Test extends React.Component {
             },
             body: JSON.stringify(input),
         }).then(res => console.log('update EVERYTHINGGG'));
+
+          window.location.href = `/`;
     }
 
     render() {
