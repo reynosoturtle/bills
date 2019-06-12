@@ -56,7 +56,7 @@ module.exports = (dbPI) => {
 
 
     let bidDaddyUpdateItem = (dataIn, callback)=>{
-
+      console.log("items dataaaaa ", dataIn)
         // console.log('ITEMS INSIDE MODEL', dataIn)
         // console.log('NUMBER OF ITEMS', dataIn.length)
         for(let i = 0 ; i < dataIn.length ; i ++){

@@ -122,8 +122,8 @@ class WholeSummary extends React.Component {
                     </table>
                </div>
 
-                    <button onClick={()=>{this.props.previousButton(this.state.receipt)}}>Back</button>
-                    <button onClick={()=>{this.props.nextButton(this.state.receipt)}}>Next</button>
+                    <button onClick={()=>{this.props.previousButton(null, null)}}>Back</button>
+                    <button onClick={()=>{this.props.nextButton(null, null)}}>Next</button>
             </div>
             )
         }

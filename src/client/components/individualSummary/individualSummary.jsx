@@ -24,10 +24,12 @@ class IndividualSummary extends React.Component {
             users: this.props.users,
             receipt: this.props.receipt,
             group: this.props.group
+                }, function() {
+                  this.calcAmount()
                 })
 
 
-        setTimeout(() =>{this.calcAmount()}, 1000);
+        // setTimeout(() =>{this.calcAmount()}, 1000);
     }
 
     calcAmount=()=>{
@@ -67,17 +69,25 @@ class IndividualSummary extends React.Component {
 
             let splitPrice = totalPrice.reduce(reducer);// sums up totalPrice array
 
+                let serviceCharge = splitPrice * 0.1;
+                let gst = (splitPrice * 0.1) * 0.07;
                 let gst_serviceCharge = 0;
+                console.log(gst_serviceCharge)
+                console.log('THIS IS GST', parseInt(this.state.receipt.gst))
+                console.log('THIS IS SVC', parseInt(this.state.receipt.serviceCharge))
+
                 // if subtotal is not equal total, means tehre is service charge and gst, else gst_serviccahrge = 0;
-                if(this.state.receipt.total !== this.state.receipt.subtotal){
-
-                   let serviceCharge = splitPrice * 0.1;
-                   let gst = (splitPrice + serviceCharge) * 0.07;
-                   gst_serviceCharge = gst + serviceCharge;
-
+                if (parseInt(this.state.receipt.gst) > 0) {
+                   gst_serviceCharge = gst_serviceCharge + gst;
                 }
 
-                splitPrice = splitPrice + gst_serviceCharge;;
+                if (parseInt(this.state.receipt.serviceCharge) > 0) {
+                   gst_serviceCharge = gst_serviceCharge + serviceCharge;
+                }
+                console.log(gst_serviceCharge)
+                console.log('split before', splitPrice)
+                splitPrice = splitPrice + gst_serviceCharge;
+                console.log('split after', splitPrice)
 
                 let newAmount = Math.round((splitPrice + 0.001) * 100) / 100;
 
@@ -97,8 +107,10 @@ class IndividualSummary extends React.Component {
 
         this.setState({
             receipt : anotherDuplicate,
+        }, function() {
+          console.log('ALL STATE',this.state);
         })
-        console.log('ALL STATE',this.state);
+
     }
 
     render() {
@@ -144,18 +156,27 @@ class IndividualSummary extends React.Component {
 
                 let splitPrice = totalPrice.reduce(reducer);// sums up totalPrice array
 
+                let serviceCharge = splitPrice * 0.1;
+                let gst = (splitPrice * 0.1) * 0.07;
                 let gst_serviceCharge = 0;
+                console.log(gst_serviceCharge)
+                console.log('THIS IS GST', parseInt(this.state.receipt.gst))
+                console.log('THIS IS SVC', parseInt(this.state.receipt.serviceCharge))
+
                 // if subtotal is not equal total, means tehre is service charge and gst, else gst_serviccahrge = 0;
-                if(this.state.receipt.total !== this.state.receipt.subtotal){
-
-                   let serviceCharge = splitPrice * 0.1;
-                   let gst = (splitPrice + serviceCharge) * 0.07;
-                   gst_serviceCharge = gst + serviceCharge;
-
+                if (parseInt(this.state.receipt.gst) > 0) {
+                  console.log("gst is more than 0")
+                   gst_serviceCharge = gst_serviceCharge + gst;
                 }
 
+                if (parseInt(this.state.receipt.serviceCharge) > 0) {
+                  console.log("svc is more than 0")
+                   gst_serviceCharge = gst_serviceCharge + serviceCharge;
+                }
+                console.log(gst_serviceCharge)
+                console.log('split before', splitPrice)
                 splitPrice = splitPrice + gst_serviceCharge;
-
+                console.log('split after', splitPrice)
                 priceSummaryForAll.push(splitPrice);
 
                 splitPrice = splitPrice.toFixed(2);
@@ -174,6 +195,7 @@ class IndividualSummary extends React.Component {
             });
 
             let calculatedTotal = priceSummaryForAll.reduce(reducer)
+            console.log('calc total reutnr!!!!', calculatedTotal)
 
             return(
                 <React.Fragment>
@@ -186,6 +208,7 @@ class IndividualSummary extends React.Component {
                             <h1>Calculated Total: $ {calculatedTotal.toFixed(3)}</h1>
                         </div>
                     </div>
+                    <button onClick={()=>{this.props.previousButton(null, null)}}>Back</button>
                     <button className={styles.indvSumButton} onClick={()=>{this.props.done()}}>Back to Home</button>
                 </React.Fragment>
             );

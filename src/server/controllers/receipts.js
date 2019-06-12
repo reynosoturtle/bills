@@ -302,11 +302,11 @@ module.exports = (db) => {
         })
     } // end of get user receipts
 
-    let updateReceipt = ( req, res)=>{ // update receipt and items;
+    let updateReceipt = (req, res)=>{ // update receipt and items;
         console.log('helo in update receipt controller');
 
         let dataIn = req.body.obj;
-        console.log(dataIn);
+        console.log("receipts.js receipt details ", dataIn);
         let updateReceiptObj = {
                 receipt_id: dataIn.receipt_id,
                 user_id: dataIn.user_id,

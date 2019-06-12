@@ -135,10 +135,6 @@ class Test extends React.Component {
                     console.log('aftersetagainomg', this.state.obj);
                 }
             );
-        } else {
-            this.setState({
-                pageNum: number
-            });
         }
     };
 

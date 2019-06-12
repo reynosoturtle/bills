@@ -66,17 +66,42 @@ module.exports = (db) => {
 
     let endConfirmationQuery = (req, res) => {
         console.log('In the controller', req.body);
-        const receipt = (err, receipt) => {
-            const items = (err, items) => {
-                console.log('UPDATED ITEMS!');
-                const group = (err, group) => {
-                    console.log('UPDATED GROUP AMOUNTS!');
-                }
-                db.groups.bigDaddyGroupUpdate(req.body.group, group)
-            }
-            db.items.bidDaddyUpdateItem(req.body.items, items)
-        }
-        db.receipts.updateReceipt(req.body, receipt);
+
+        db.receipts.updateReceipt(req.body, (err, receipt) => {
+          if (err) {
+            console.log(err)
+          } else {
+            console.log("receipt updated")
+            db.items.bidDaddyUpdateItem(req.body.items, (err, items) => {
+              if (err) {
+                console.log(err)
+              } else {
+                console.log("Update items");
+                db.groups.bigDaddyGroupUpdate(req.body.group, (err, groups) => {
+                  if (err) {
+                    console.log(err)
+                  } else {
+                    console.log("Update groups");
+                    //response.redirect("/")
+                  }
+                })
+              }
+            })
+          }
+        });
+    //     const receipt = (err, receipt) => {
+
+    //         const items = (err, items) => {
+    //             console.log('UPDATED ITEMS!');
+    //             const group = (err, group) => {
+    //                 console.log('UPDATED GROUP AMOUNTS!');
+    //             }
+    //             db.groups.bigDaddyGroupUpdate(req.body.group, group)
+    //         }
+    //         db.items.bidDaddyUpdateItem(req.body.items, items)
+    //     }
+    //     db.receipts.updateReceipt(req.body, receipt);
+    //     response.redirect("/")
     }
 
     return {

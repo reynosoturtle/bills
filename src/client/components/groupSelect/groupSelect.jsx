@@ -118,7 +118,7 @@ class GroupSelect extends React.Component {
           return (
             <li key={user.id}>
                   <input
-                    readonly="readonly"
+                    readOnly="readonly"
                     type="checkbox"
                     name="group"
                     value={user.id}
