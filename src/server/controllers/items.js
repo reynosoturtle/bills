@@ -41,7 +41,8 @@ module.exports = (db) => {
 
     let startConfirmationQuery = (req, res) => {
         console.log('HUGE QUERY CONTROLLER');
-        console.log('receipt ID', req.params.id);
+        //console.log('receipt ID', req.params.id);
+        console.log('receipt ID', req.cookies.receiptId)
         //get items
         const receipt = (err, receipt) => {
 
@@ -49,8 +50,10 @@ module.exports = (db) => {
 
                 // console.log('Done with getting ITEMS',items)
                 //get group members
+                console.log(items)
                 let obj = {
                     receiptId: receipt.rows[0],
+                    //receiptId: req.params.id,
                     items: items.allItems,
                     // groupMembers: groupId.rows,
                     // usersDetails: dataArray,
@@ -59,9 +62,9 @@ module.exports = (db) => {
                 res.send(obj);
             }
             // })
-            db.items.getItems(req.params.id, items)
+            db.items.getItems(req.cookies.receiptId, items)
         }
-        db.receipts.getReceiptById(req.params.id, receipt)
+        db.receipts.getReceiptById(req.cookies.receiptId, receipt)
     }
 
     let endConfirmationQuery = (req, res) => {
