@@ -67,41 +67,20 @@ module.exports = (db) => {
     let endConfirmationQuery = (req, res) => {
         console.log('In the controller', req.body);
 
-        db.receipts.updateReceipt(req.body, (err, receipt) => {
-          if (err) {
-            console.log(err)
-          } else {
-            console.log("receipt updated")
-            db.items.bidDaddyUpdateItem(req.body.items, (err, items) => {
-              if (err) {
-                console.log(err)
-              } else {
-                console.log("Update items");
-                db.groups.bigDaddyGroupUpdate(req.body.group, (err, groups) => {
-                  if (err) {
-                    console.log(err)
-                  } else {
-                    console.log("Update groups");
-                    //response.redirect("/")
-                  }
-                })
-              }
-            })
-          }
-        });
-    //     const receipt = (err, receipt) => {
+        const receipt = (err, receipt) => {
+            console.log('UPDATED RECEIPT');
+        }
+        const items = (err, items) => {
+            console.log('UPDATED ITEMS!');
+        }
+        const group = (err, group) => {
+            console.log('UPDATED GROUP AMOUNTS!');
+        }
+        db.receipts.updateReceipt(req.body, receipt);
+        db.items.bidDaddyUpdateItem(req.body.items, items)
+        db.groups.bigDaddyGroupUpdate(req.body.group, group);
 
-    //         const items = (err, items) => {
-    //             console.log('UPDATED ITEMS!');
-    //             const group = (err, group) => {
-    //                 console.log('UPDATED GROUP AMOUNTS!');
-    //             }
-    //             db.groups.bigDaddyGroupUpdate(req.body.group, group)
-    //         }
-    //         db.items.bidDaddyUpdateItem(req.body.items, items)
-    //     }
-    //     db.receipts.updateReceipt(req.body, receipt);
-    //     response.redirect("/")
+        // res.redirect("/")
     }
 
     return {
@@ -111,3 +90,35 @@ module.exports = (db) => {
         endConfirmationQuery,
     };
 };
+
+// db.receipts.updateReceipt(req.body, (err, receipt) => {
+//   if (err) {
+//     console.log(err)
+//   } else {
+//     console.log("receipt updated")
+//     db.items.bidDaddyUpdateItem(req.body.items, (err, items) => {
+//       if (err) {
+//         console.log(err)
+//       } else {
+//         console.log("Update items");
+//         let counter = 0;
+//         for (i=0; i < req.body.group.length; i++) {
+//             db.groups.bigDaddyGroupUpdate(req.body.group[i], (err, groups) => {
+//               if (err) {
+//                 console.log(err)
+//               } else {
+//                 console.log("Update groups");
+//                 counter++;
+//                 //response.redirect("/")
+//               }
+//             })
+//         }
+//         if (counter === req.body.group.length) {
+//             res.redirect("/")
+//         } else {
+//             console.log("still on going")
+//         }
+//       }
+//     })
+//   }
+// });

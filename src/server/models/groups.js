@@ -84,13 +84,11 @@ module.exports = (dbPI) => {
     }
 
     let bigDaddyGroupUpdate = (dataIn, callback) => {
-      console.log("group.js dataaaa ", dataIn.length)
+      console.log("group.js dataaaa ", dataIn)
         for(let i = 0 ; i < dataIn.length ; i ++){
+            console.log('Adding ...GROUP', i, dataIn[i].friend_id, dataIn[i].amount);
 
-            //let query = `UPDATE groups set amount = ($1) where friend_id = ($2) AND receipt_id = ($3)`;
-            //let valuesUpdate = [ dataIn.item_name, dataIn.price, dataIn.quantity, dataIn.users_id]
             let query = `INSERT INTO groups (amount, friend_id, receipt_id) VALUES ($1, $2, $3) RETURNING *`;
-            //let valuesUpdate = [ dataIn[i].amount, dataIn[i].friend_id, dataIn[i].receipt_id]
             let valuesUpdate = [ dataIn[i].amount, dataIn[i].friend_id, dataIn[i].receipt_id]
 
             dbPI.query( query, valuesUpdate, (err,r)=>{
@@ -98,6 +96,16 @@ module.exports = (dbPI) => {
             });
         }
     }
+
+//     BEGIN
+//    IF NOT EXISTS (SELECT * FROM groups
+//                    WHERE receipt_id = 3
+//                    AND friend_id = 11)
+//    BEGIN
+//        INSERT INTO groups (receipt_id, friend_id, amount)
+//        VALUES (3, 11, 50)
+//    END
+// END
 
   return {
     getUsersData,
