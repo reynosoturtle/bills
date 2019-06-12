@@ -10,94 +10,98 @@ class IndividualSummary extends React.Component {
         this.state = {
             items: null,
             users: null,
-            receipt:null,
+            receipt: null,
             group: null,
             saveAmount: null,
-            total:0,
+            total: 0,
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
 
         this.setState({
             items: this.props.items,
             users: this.props.users,
             receipt: this.props.receipt,
             group: this.props.group
-                }, function() {
-                  this.calcAmount()
-                })
+        }, function() {
+            this.calcAmount()
+        })
 
 
         // setTimeout(() =>{this.calcAmount()}, 1000);
     }
 
-    calcAmount=()=>{
+    calcAmount = () => {
         console.log(this.state.users);
         let usersGroupsArr = this.state.users;
         let itemsList = this.state.items;
-        let otherChargesTotal =  this.state.receipt.total - this.state.receipt.subtotal;
-        let otherChargesSplit = otherChargesTotal/usersGroupsArr.length;
+        // let otherChargesTotal = this.state.receipt.total - this.state.receipt.subtotal;
+        // let otherChargesSplit = otherChargesTotal / usersGroupsArr.length;
         let objToSave = [];
         let newTotal = 0;
         const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
-        usersGroupsArr.forEach((user,index)=>{
-            let itemArr=[];
+        usersGroupsArr.forEach((user, index) => {
+            let itemArr = [];
             let totalPrice = [];
-            itemsList.forEach(item=>{
-                for(let i = 0; i < item.users_id.length; i++){
-                    if(item.users_id[i] === user.id){
+            itemsList.forEach(item => {
+                for (let i = 0; i < item.users_id.length; i++) {
+                    if (item.users_id[i] === user.id) {
                         // console.log(`${item.item_name} belongs to ${user.friend_id}`);
                         let obj = {
-                                item_name: item.item_name,
-                                price: item.price,
-                                users_id :item.users_id,
+                            item_name: item.item_name,
+                            price: item.price,
+                            users_id: item.users_id,
                         }
-                    itemArr.push(obj);
+                        itemArr.push(obj);
                     }
                 }
             })
 
-            itemArr.forEach(item=>{
+            itemArr.forEach(item => {
                 // console.log(item.users_id.length);
-                let price = item.price/item.users_id.length;
+                let price = item.price / item.users_id.length;
 
                 totalPrice.push(price);
 
             })
 
-            let splitPrice = totalPrice.reduce(reducer);// sums up totalPrice array
+            let splitPrice = totalPrice.reduce(reducer); // sums up totalPrice array
 
-                let serviceCharge = splitPrice * 0.1;
-                let gst = (splitPrice * 0.1) * 0.07;
-                let gst_serviceCharge = 0;
-                console.log(gst_serviceCharge)
-                console.log('THIS IS GST', parseInt(this.state.receipt.gst))
-                console.log('THIS IS SVC', parseInt(this.state.receipt.serviceCharge))
+            let serviceCharge = splitPrice * 0.1;
+            let gst = (splitPrice * 0.1) * 0.07;
+            let gst_serviceCharge = 0;
+            console.log(gst_serviceCharge)
+            console.log('THIS IS GST', parseInt(this.state.receipt.gst))
+            console.log('THIS IS SVC', parseInt(this.state.receipt.serviceCharge))
 
-                // if subtotal is not equal total, means tehre is service charge and gst, else gst_serviccahrge = 0;
-                if (parseInt(this.state.receipt.gst) > 0) {
-                   gst_serviceCharge = gst_serviceCharge + gst;
+            // if subtotal is not equal total, means tehre is service charge and gst, else gst_serviccahrge = 0;
+            if (parseInt(this.state.receipt.gst) > 0) {
+                gst_serviceCharge = gst_serviceCharge + gst;
+            }
+
+            if (parseInt(this.state.receipt.serviceCharge) > 0) {
+                gst_serviceCharge = gst_serviceCharge + serviceCharge;
+            }
+            console.log(gst_serviceCharge)
+            console.log('split before', splitPrice)
+            splitPrice = splitPrice + gst_serviceCharge;
+            console.log('split after', splitPrice)
+
+            let newAmount = Math.round((splitPrice + 0.001) * 100) / 100;
+
+            let duplicate = this.state.receipt;
+
+            for (let i = 0; i < duplicate.group.length; i++) {
+                if (duplicate.group[i].friend_id == user.id) {
+                    duplicate.group[i].amount = newAmount;
                 }
+            }
 
-                if (parseInt(this.state.receipt.serviceCharge) > 0) {
-                   gst_serviceCharge = gst_serviceCharge + serviceCharge;
-                }
-                console.log(gst_serviceCharge)
-                console.log('split before', splitPrice)
-                splitPrice = splitPrice + gst_serviceCharge;
-                console.log('split after', splitPrice)
-
-                let newAmount = Math.round((splitPrice + 0.001) * 100) / 100;
-
-                let duplicate = this.state.receipt;
-
-                duplicate.group[index].amount = newAmount;
-
-                this.setState({
-                    receipt:duplicate,
-                })
+            this.setState({
+                receipt: duplicate,
+            })
 
             newTotal = newAmount + newTotal;
         })
@@ -106,58 +110,58 @@ class IndividualSummary extends React.Component {
         anotherDuplicate.total = newTotal;
 
         this.setState({
-            receipt : anotherDuplicate,
+            receipt: anotherDuplicate,
         }, function() {
-          console.log('ALL STATE',this.state);
+            console.log('ALL STATE', this.state);
         })
 
     }
 
     render() {
 
-        if (this.state.items === null || this.state.users === null  ||this.state.receipt === null || this.state.group === null) {
+        if (this.state.items === null || this.state.users === null || this.state.receipt === null || this.state.group === null) {
             return <p>LOADING</p>
         } else {
             let priceSummaryForAll = [];
             const reducer = (accumulator, currentValue) => accumulator + currentValue;
-            let userSummary = this.state.users.map((user,indexUser)=>{
+            let userSummary = this.state.users.map((user, indexUser) => {
                 let userForCurrent = user.username;
-                let otherChargesTotal = this.state.receipt.total - this.state.receipt.subtotal;
-                let peopleInGroup = this.state.users.length;  // this is bad
-                let otherChargesSplit = (otherChargesTotal/peopleInGroup); // this is bad too
+                // let otherChargesTotal = this.state.receipt.total - this.state.receipt.subtotal;
+                // let peopleInGroup = this.state.users.length; // this is bad
+                // let otherChargesSplit = (otherChargesTotal / peopleInGroup); // this is bad too
 
-                let itemArr=[]; //items belonging to user[index]
+                let itemArr = []; //items belonging to user[index]
                 let totalPrice = []; //all prices of itemArr
 
-                let putItemsInArr = this.state.items.map((item)=>{
-                    for(let i = 0; i < item.users_id.length; i++){
-                        if(item.users_id[i] === user.id){
+                let putItemsInArr = this.state.items.map((item) => {
+                    for (let i = 0; i < item.users_id.length; i++) {
+                        if (item.users_id[i] === user.id) {
                             // console.log(`${item.item_name} belongs to ${user.friend_id}`);
                             let obj = {
-                                    item_name: item.item_name,
-                                    price: item.price,
-                                    users_id :item.users_id,
+                                item_name: item.item_name,
+                                price: item.price,
+                                users_id: item.users_id,
                             }
                             itemArr.push(obj);
                         }
                     }
                 });
 
-                let itemList = itemArr.map((item,index)=>{
+                let itemList = itemArr.map((item, index) => {
                     // console.log(item.users_id.length);
-                    let price = item.price/item.users_id.length;
+                    let price = item.price / item.users_id.length;
 
                     totalPrice.push(price);
                     price = price.toFixed(2);
-                    return(
+                    return (
                         <h3 className={styles.indvSumItemName} key={index}>{item.item_name}   ${price}</h3>
                     );
                 })
 
-                let splitPrice = totalPrice.reduce(reducer);// sums up totalPrice array
+                let splitPrice = totalPrice.reduce(reducer); // sums up totalPrice array
 
                 let serviceCharge = splitPrice * 0.1;
-                let gst = (splitPrice * 0.1) * 0.07;
+                let gst = (splitPrice + serviceCharge) * 0.07;
                 let gst_serviceCharge = 0;
                 console.log(gst_serviceCharge)
                 console.log('THIS IS GST', parseInt(this.state.receipt.gst))
@@ -165,13 +169,13 @@ class IndividualSummary extends React.Component {
 
                 // if subtotal is not equal total, means tehre is service charge and gst, else gst_serviccahrge = 0;
                 if (parseInt(this.state.receipt.gst) > 0) {
-                  console.log("gst is more than 0")
-                   gst_serviceCharge = gst_serviceCharge + gst;
+                    console.log("gst is more than 0")
+                    gst_serviceCharge = gst_serviceCharge + gst;
                 }
 
                 if (parseInt(this.state.receipt.serviceCharge) > 0) {
-                  console.log("svc is more than 0")
-                   gst_serviceCharge = gst_serviceCharge + serviceCharge;
+                    console.log("svc is more than 0")
+                    gst_serviceCharge = gst_serviceCharge + serviceCharge;
                 }
                 console.log(gst_serviceCharge)
                 console.log('split before', splitPrice)
@@ -181,7 +185,7 @@ class IndividualSummary extends React.Component {
 
                 splitPrice = splitPrice.toFixed(2);
 
-                return(
+                return (
                     <div key={indexUser}>
                         <h2 className={styles.userNameSum}>{userForCurrent}</h2>
                            <div>
@@ -197,7 +201,7 @@ class IndividualSummary extends React.Component {
             let calculatedTotal = priceSummaryForAll.reduce(reducer)
             console.log('calc total reutnr!!!!', calculatedTotal)
 
-            return(
+            return (
                 <React.Fragment>
                     <div className={styles.headerSummary}>
                         <h1 className={styles.textCenterSummary}>Individual Payment Summary</h1><br/>
