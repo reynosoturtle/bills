@@ -79,6 +79,7 @@ class Test extends React.Component {
             body: JSON.stringify(input)
         }).then((res) => console.log('updated receipts'));
         // console.log(res.json())
+        window.location.href = `/`;
     };
 
     changePageForward = (state, pageName = null) => {

@@ -80,7 +80,6 @@ module.exports = (db) => {
         db.items.bidDaddyUpdateItem(req.body.items, items)
         db.groups.bigDaddyGroupUpdate(req.body.group, group);
 
-        // res.redirect("/")
     }
 
     return {

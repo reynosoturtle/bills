@@ -78,7 +78,7 @@ class Home extends React.Component {
         console.log(e.target.parentNode.id)
         let receiptId = e.target.parentNode.id;
         Cookies.set('receiptId', receiptId, { path: '' });
-        window.location.href = `/summaryReceipt`;
+        // window.location.href = `/summaryReceipt`;
     }
 
 
