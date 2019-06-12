@@ -70,7 +70,7 @@ class IndividualSummary extends React.Component {
             let splitPrice = totalPrice.reduce(reducer); // sums up totalPrice array
 
             let serviceCharge = splitPrice * 0.1;
-            let gst = (splitPrice * 0.1) * 0.07;
+            let gst = (splitPrice + serviceCharge)  * 0.07;
             let gst_serviceCharge = 0;
             console.log(gst_serviceCharge)
             console.log('THIS IS GST', parseInt(this.state.receipt.gst))
